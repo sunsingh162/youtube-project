@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
 const sidenavSlice = createSlice({
   name: "sidenav",
   initialState: {
@@ -10,9 +9,12 @@ const sidenavSlice = createSlice({
     toggleNav: (state, action) => {
       state.isNavOpen = !state.isNavOpen;
     },
+    hideNav: (state) => {
+      state.isNavOpen = false;
+    },
   },
 });
 
 export default sidenavSlice.reducer;
 
-export const { toggleNav } = sidenavSlice.actions;
+export const { toggleNav, hideNav } = sidenavSlice.actions;

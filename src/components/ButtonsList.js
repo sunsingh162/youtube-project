@@ -16,7 +16,7 @@ const ButtonsList = () => {
     "Gaming",
   ];
   return (
-    <div className="flex">
+    <div className="flex mx-8">
       {buttonNames.map((btn,idx) => (
         <Button key={idx} name={btn} />
       ))}
