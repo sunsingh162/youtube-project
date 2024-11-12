@@ -1,12 +1,46 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleNav } from "../utils/sidenavSlice";
+import { YOUTUBE_SEARCH_API } from "../utils/constants";
+import { CiSearch } from "react-icons/ci";
+import { searchCache } from "../utils/searchSlice";
 
 const Head = () => {
   const dispatch = useDispatch();
+  const cacheStore = useSelector((store) => store.search);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchSuggestions, setSearchSuggestions] = useState("");
+  const [showSuggestion, setShowSuggestion] = useState(false);
 
   const handleToggleSidenav = () => {
     dispatch(toggleNav());
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (cacheStore[searchQuery]) {
+        setSearchSuggestions(cacheStore[searchQuery]);
+      } else {
+        fetchSuggestions();
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const fetchSuggestions = async () => {
+    try {
+      const data = await fetch(YOUTUBE_SEARCH_API + searchQuery);
+      const json = await data.json();
+      setSearchSuggestions(json[1]);
+      dispatch(
+        searchCache({
+          [searchQuery]: json[1],
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -25,14 +59,36 @@ const Head = () => {
         />
       </div>
       <div className="col-span-10 px-6">
-        <input
-          className="w-1/2 border border-gray-500 p-2 rounded-l-full"
-          type="text"
-        />
-        <button className="border border-gray-500 py-2 px-5 rounded-r-full bg-gray-100">
-          🔎
-        </button>
+        <div>
+          <input
+            className="w-1/2 border border-gray-500 p-2 rounded-l-full"
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestion(true)}
+            onBlur={() => setShowSuggestion(false)}
+          />
+          <button className="border border-gray-500 py-2 px-5 rounded-r-full bg-gray-100">
+            🔎
+          </button>
+        </div>
+        {showSuggestion && (
+          <div className="bg-white fixed px-3 py-2 m-1 w-[25.7rem] rounded-lg border-gray-200">
+            {searchSuggestions &&
+              searchSuggestions.map((suggestion) => (
+                <ul key={suggestion}>
+                  <li className="flex hover:bg-gray-100">
+                    <span className="mt-1.5">
+                      <CiSearch />
+                    </span>
+                    <span className="mx-5">{suggestion}</span>
+                  </li>
+                </ul>
+              ))}
+          </div>
+        )}
       </div>
+
       <div className="col-span-1">
         <img
           className="h-8"
