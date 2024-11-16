@@ -1,4 +1,5 @@
 import React from "react";
+import { FaRegUserCircle } from "react-icons/fa";
 
 //YOUTUBE NESTED COMMENTS LOGIC
 
@@ -65,41 +66,35 @@ const commentsData = [
   },
 ];
 
-const Comments = ({ comments }) => {
-  const { name, text, replies } = comments;
-  return (
-    <div className="flex bg-gray-100">
-      <img
-        className="w-10 h-10"
-        alt="img"
-        src="https://as2.ftcdn.net/v2/jpg/02/29/75/83/1000_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
-      />
-      <div className="m-1 p-1 ">
-        <p>{name}</p>
-        <p>{text}</p>
-      </div>
+const Comment = ({data}) => {
+  const {name , text , replies} = data;
+  return <div className='flex bg-gray-300 items-center rounded-lg p-2 my-2 shadow-md'>
+    <FaRegUserCircle/>
+    <div className='p-3'>
+      <p className='text-xl font-bold'>{name}</p>
+      <p className='text-lg'>{text}</p>
     </div>
-  );
-};
+  </div>
+}
 
-const CommentsList = ({ comments }) => {
-  return comments.map((comment,idx) => (
-    <div key={idx}>
-      <Comments comments={comment} />
-      <div className="pl-5 border border-l-black ml-5">
-        <CommentsList comments={comment.replies} />  
-      </div>
+const CommentList = ({comments}) => {
+ return comments.map((comment , index) => (
+  <div key={index}>
+    <Comment data={comment}/>
+    <div className='pl-5 border ml-5 border-l-black'>
+      <CommentList comments={comment.replies}/>
     </div>
-  ));
-};
+  </div>
+ ))
+}
 
 const CommentsContainer = () => {
   return (
-    <div className="p-1 mx-4">
-      <h1 className="font-bold">Comments:</h1>
-      <CommentsList comments={commentsData} />
+    <div className='m-5 ml-20 p-2'>
+      <h1 className='text-2xl font-bold'>Comments</h1>
+      <CommentList comments={commentsData}/>
     </div>
-  );
-};
+  )
+}
 
 export default CommentsContainer;

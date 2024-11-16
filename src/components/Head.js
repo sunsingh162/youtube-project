@@ -1,103 +1,112 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleNav } from "../utils/sidenavSlice";
-import { YOUTUBE_SEARCH_API } from "../utils/constants";
+import React, { useEffect, useState } from 'react'
 import { CiSearch } from "react-icons/ci";
-import { searchCache } from "../utils/searchSlice";
+import { FaMicrophone } from "react-icons/fa";
+import { FaRegUserCircle } from "react-icons/fa";
+import { FaRegBell } from "react-icons/fa";
+import { RiVideoUploadLine } from "react-icons/ri";
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleMenu } from '../utils/appSlice';
+import { YOUTUBE_SEARCH_API } from '../utils/constants';
+import { cacheResults } from '../utils/searchSlice';
 
 const Head = () => {
-  const dispatch = useDispatch();
-  const cacheStore = useSelector((store) => store.search);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchSuggestions, setSearchSuggestions] = useState("");
-  const [showSuggestion, setShowSuggestion] = useState(false);
 
-  const handleToggleSidenav = () => {
-    dispatch(toggleNav());
-  };
+  const [searchQuery , setSearchQuery] = useState("");
+  const [suggestion , setSuggestion] = useState([]);
+  const [showSuggestion , setShowSuggestion] = useState(false);
+  const searchCache = useSelector((store)=> store.search);
+  const dispatch = useDispatch()
 
-  useEffect(() => {
+  useEffect(()=>{
+    // make an api call after evry key press
+    // but difference between two api call is less than 200ms
     const timer = setTimeout(() => {
-      if (cacheStore[searchQuery]) {
-        setSearchSuggestions(cacheStore[searchQuery]);
-      } else {
-        fetchSuggestions();
-      }
-    }, 200);
+      if(searchCache[searchQuery]) {
+        setSuggestion(searchCache[searchQuery]);
+      }else{
+        getSearchSuggestion()
+      }}, 200)
+    // decline the api call
+    return ()=> {
+      clearTimeout(timer);
+    }     
+  },[searchQuery])
 
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+  const getSearchSuggestion = async () => {
+    console.log("API CALL - "+searchQuery);
+    const data = await fetch(YOUTUBE_SEARCH_API + searchQuery);
+    const response = await data.json();
+    setSuggestion(response[1]);
 
-  const fetchSuggestions = async () => {
-    try {
-      const data = await fetch(YOUTUBE_SEARCH_API + searchQuery);
-      const json = await data.json();
-      setSearchSuggestions(json[1]);
-      dispatch(
-        searchCache({
-          [searchQuery]: json[1],
-        })
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    dispatch(cacheResults({
+      [searchQuery] : response[1],
+    }))
 
-  return (
-    <div className="grid grid-flow-col p-5 m-2 shadow-lg">
-      <div className="flex col-span-1">
-        <img
-          className="h-8 cursor-pointer"
-          alt="hamburger"
-          src="https://53.fs1.hubspotusercontent-na1.net/hub/53/hubfs/What%20is%20a%20Hamburger%20Button.png?width=225&name=What%20is%20a%20Hamburger%20Button.png"
-          onClick={handleToggleSidenav}
-        />
-        <img
-          className="h-8 mx-2"
-          alt="youtube logo"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/YouTube_Logo_2017.svg/2560px-YouTube_Logo_2017.svg.png"
-        />
-      </div>
-      <div className="col-span-10 px-6">
-        <div>
-          <input
-            className="w-1/2 border border-gray-500 p-2 rounded-l-full"
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setShowSuggestion(true)}
-            onBlur={() => setShowSuggestion(false)}
+  }
+
+
+  const toggleMenuHandler = () => {
+    dispatch(toggleMenu());
+  }
+
+    return (
+      <div className="flex z-10 items-center h-14 fixed left-0 top-0 bg-white px-4">
+        <div className="flex items-center">
+          <img
+            onClick={()=> toggleMenuHandler()}
+            alt="menu icon"
+            className="w-7 h-7 hover:bg-[#dbd9d9] rounded-full  cursor-pointer m-2"
+            src="https://icons.veryicon.com/png/o/miscellaneous/linear-icon-45/hamburger-menu-4.png"
           />
-          <button className="border border-gray-500 py-2 px-5 rounded-r-full bg-gray-100">
-            🔎
-          </button>
+          <img
+            alt="logo-youtube"
+            className="w-[90px] cursor-pointer h-5 my-5 ml-4 mr-4"
+            src="https://upload.wikimedia.org/wikipedia/commons/3/34/YouTube_logo_%282017%29.png"
+          />
         </div>
-        {showSuggestion && (
-          <div className="bg-white fixed px-3 py-2 m-1 w-[25.7rem] rounded-lg border-gray-200">
-            {searchSuggestions &&
-              searchSuggestions.map((suggestion) => (
-                <ul key={suggestion}>
-                  <li className="flex hover:bg-gray-100">
-                    <span className="mt-1.5">
-                      <CiSearch />
-                    </span>
-                    <span className="mx-5">{suggestion}</span>
-                  </li>
-                </ul>
-              ))}
+        <div className="flex gap-6 items-center">
+            <div className="flex items-center">
+                <input
+                  value={searchQuery}
+                  type="text"
+                  onChange={(e)=>setSearchQuery(e.target.value)}
+                  onFocus={()=> setShowSuggestion(true)}
+                  onBlur={()=> setShowSuggestion(false)}
+                  placeholder="Search"
+                  className="w-[536px] border-2 outline-none font-bold border-[#dbd9d9] px-4 rounded-l-3xl ml-44 h-10"
+                />
+                <button className="rounded-r-3xl border-[1px] mr-5 hover:bg-[#d3d0d0] border-[#dbd9d9] font-bold flex items-center justify-center px-4 text-xl bg-[#F0F0F0] h-10">
+                  <CiSearch />
+                </button>
+            </div>
+            {showSuggestion && (<div className='fixed top-12 bg-white border-[1px] font-bold shadow-xl rounded-xl border-[#dbd9d9] left-[360px]'>
+              <ul className='flex flex-col   '>
+                {
+                  suggestion.map((item) => (
+                    <li key={item} className='flex gap-2 py-2   px-2 w-[510px] rounded-xl hover:bg-gray-100 items-center'><CiSearch />{item}</li>
+                  ))
+                }
+              </ul>
+            </div>)}
+        </div>
+          <button className="bg-[#F0F0F0] hover:bg-[#d3d0d0] flex items-center justify-center w-10 h-10 rounded-full">
+            <FaMicrophone />
+          </button>
+        <div className=" ml-44">
+          <div className="flex  items-center gap-6 text-xl">
+            <div className="hover:bg-[#eceaea] cursor-pointer flex items-center justify-center w-10 h-10 rounded-full">
+              <RiVideoUploadLine />
+            </div>
+            <div className="hover:bg-[#eceaea] cursor-pointer flex items-center justify-center w-10 h-10 rounded-full">
+              <FaRegBell />
+            </div>
+            <div className="hover:bg-[#eceaea] cursor-pointer flex items-center justify-center w-10 h-10 rounded-full">
+              <FaRegUserCircle />
+            </div>
           </div>
-        )}
+        </div>
       </div>
-
-      <div className="col-span-1">
-        <img
-          className="h-8"
-          alt="user"
-          src="https://as2.ftcdn.net/v2/jpg/02/29/75/83/1000_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
-        />
-      </div>
-    </div>
-  );
-};
+    );
+}
 
 export default Head;

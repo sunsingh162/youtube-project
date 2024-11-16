@@ -1,79 +1,70 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React from 'react'
+import { BiLike } from "react-icons/bi";
+import { useSelector } from 'react-redux';
+import { HiDownload } from "react-icons/hi";
+import { GoHomeFill } from "react-icons/go";
+import { RiHistoryLine } from "react-icons/ri";
+import { SiYoutubeshorts } from "react-icons/si";
+import { PiPlaylistDuotone } from "react-icons/pi";
+import { IoIosArrowForward } from "react-icons/io";
+import { AiOutlinePlaySquare } from "react-icons/ai";
+import { MdOutlineWatchLater } from "react-icons/md";
+import { MdOutlineSubscriptions } from "react-icons/md";
+import { MdOutlineSwitchAccount } from "react-icons/md";
+import SideFold from './SideFold';
+import { Link } from 'react-router-dom';
 
-const SideBar = () => {
-  const isSidenavOpen = useSelector((store) => store.sidenav.isNavOpen);
 
-  if(!isSidenavOpen) return null;
+const Sidebar = () => {
+  const isMenuOpen = useSelector(store => store.app.isMenuOpen);
+
+  if(!isMenuOpen) return <SideFold/>;
+
   return (
-    <div className="shadow-lg w-48">
-      <div className="border-b-2 ">
-        <div className="py-2 mx-10">
-          <h1>Home</h1>
-          <h1>Shorts</h1>
-          <h1>Subscriptions</h1>
+    <div className="w-60 bg-white fixed sidebar top-10 -z-10 left-0 p-5">
+      <div className="text-[15px] mb-2">
+        <div className=" flex items-center gap-5 pl-2 bg-[#f1eeeece] rounded-lg p-2">
+          <GoHomeFill className="text-xl" />
+          <Link to="/">Home</Link>
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <SiYoutubeshorts className="text-xl" /> Shorts
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <MdOutlineSubscriptions className="text-xl" /> Subscriptions
         </div>
       </div>
-      <div className="border-b-2">
-        <div className="py-2 mx-10">
-          <h1>You </h1>
-          <div>
-            <p>History</p>
-            <p>Playlists</p>
-            <p>Watch Later</p>
-            <p>Liked Videos</p>
-          </div>
+      <hr />
+      <div className="text-[15px] my-2">
+        <div className=" text-[18px] flex items-center gap-3 pl-2 rounded-lg p-2">
+          You
+          <IoIosArrowForward className="text-xl" />
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <MdOutlineSwitchAccount className="text-xl" /> Your Channel
+        </div>
+        <div className="flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <RiHistoryLine className="text-xl" /> History
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <PiPlaylistDuotone className="text-xl" /> Playlists
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <AiOutlinePlaySquare className="text-xl" /> Your Videos
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <MdOutlineWatchLater className="text-xl" /> Watch Later
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <BiLike className="text-xl" /> Liked Videos
+        </div>
+        <div className=" flex items-center gap-5 pl-2 p-2 rounded-lg">
+          <HiDownload className="text-xl" /> Downloads
         </div>
       </div>
-      <div className="border-b-2">
-        <div className="py-2 mx-10">
-          <h1>Subscriptions</h1>
-          <div>
-            <p>Akshay Saini</p>
-            <p>All Subscriptions</p>
-          </div>
-        </div>
-      </div>
-      <div className="border-b-2">
-        <div className="py-2 mx-10">
-          <h1>Explore</h1>
-          <div>
-            <p>Trending</p>
-            <p>Shopping</p>
-            <p>Music</p>
-            <p>Movies</p>
-            <p>Live</p>
-            <p>News</p>
-            <p>Sports</p>
-            <p>Courses</p>
-            <p>Fashion & Beauty</p>
-            <p>Podcasts</p>
-          </div>
-        </div>
-      </div>
-      <div className="border-b-2">
-        <div className="py-2 mx-10">
-          <h1>More from Youtube</h1>
-          <div>
-            <p>Youtube Premium</p>
-            <p>Youtube Music</p>
-            <p>Youtube Kids</p>
-          </div>
-        </div>
-      </div>
-      <div className="border-b-2">
-        <div className="py-2 mx-10">
-          <p>Settings</p>
-          <p>Report History</p>
-          <p>Help</p>
-          <p>Send Feedback</p>
-        </div>
-      </div>
-      <div>
-        <p>Copyright</p>
-      </div>
+      <hr />
     </div>
   );
-};
+}
 
-export default SideBar;
+export default Sidebar;

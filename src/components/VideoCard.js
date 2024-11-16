@@ -1,27 +1,27 @@
-import React from "react";
+import React from 'react'
 
-const VideoCard = ({ info }) => {
-  const { snippet, statistics } = info;
-  const { channelTitle, title, thumbnails } = snippet;
+const VideoCard = ({info}) => {
+
+    const { snippet , statistics } = info;
+    const {title, channelTitle, thumbnails} = snippet;
   return (
-    info && (
-      <div className="p-2 m-2 w-72 shadow-lg">
-        <img className="rounded-lg" alt="video" src={thumbnails.high.url} />
-        <h1 className="font-bold py-2">{title}</h1>
-        <p>{channelTitle}</p>
-        <p>{statistics.viewCount} views</p>
-      </div>
-    )
-  );
-};
+    <div className='cursor-pointer'>
+        <img src={thumbnails.medium.url} alt={title} className='shadow-xl rounded-2xl'/>
+        <h3 className='font-bold w-80'>{title}</h3>
+        <p className='text-gray-500 text-sm'>{channelTitle}</p>
+        <p className='text-gray-500 text-sm'>{statistics.viewCount} views</p>
+    </div>
+  )
+}
+
 
 export const AdVideoCard = ({info}) => {
-    return (
-      <div>
-        <h1 className="absolute border-gray-100 bg-gray-400 p-1 rounded-lg">Ad</h1>
-        <VideoCard info={info} />
-      </div>
-    );
-};
+  return(
+    <div className=' bg-green-200 border border-black rounded-2xl'>
+      <VideoCard info={info} />
+      <p className='font-bold px-5 shadow-2xl text-sm'>AD .</p>
+    </div>
+  )
+}
 
 export default VideoCard;

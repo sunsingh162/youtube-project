@@ -1,34 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { YOUTUBE_VIDEOS_API } from "../utils/constants";
-import VideoCard from "./VideoCard";
-import { Link } from "react-router-dom";
-import { AdVideoCard } from "./VideoCard";
+import React, { useEffect, useState } from 'react'
+import { YOUTUBE_VIDEOS_API } from '../utils/constants';
+import VideoCard, { AdVideoCard } from './VideoCard';
+import { Link } from 'react-router-dom';
 
 const VideoContainer = () => {
-  const [showVideos, setShowVideos] = useState([]);
-  useEffect(() => {
-    fetchVideos();
-  }, []);
+  const [videos , setVideos] = useState([]);
 
-  const fetchVideos = async () => {
-    try {
-      const data = await fetch(YOUTUBE_VIDEOS_API);
-      const json = await data.json();
-      setShowVideos(json.items);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const getvideos = async () => {
+    const data = await fetch(YOUTUBE_VIDEOS_API);
+    const response = await data.json();
+    setVideos(response.items);
+  }
+
+  useEffect(()=>{
+    getvideos();
+  },[])
+
   return (
-    <div className="flex flex-wrap justify-center">
-      {showVideos[0] && <AdVideoCard info={showVideos[0]} />}
-      {showVideos.map((video) => (
-        <Link key={video.id} to={"/watch?v=" + video.id}>
-          <VideoCard info={video} />
+    <div className='relative justify-center cursor-pointer mb-5 flex flex-wrap gap-5 h-[100vh] w-[80vw] -z-50 top-10 left-60'>
+      {videos[0] && <AdVideoCard info={videos[0]}/>}
+      {
+        videos.map(video =>
+        <Link key={video.id} to={"/watch?v="+ video.id}>
+          <VideoCard info={video}/>
         </Link>
-      ))}
+        )
+      }
     </div>
   );
-};
+}
 
 export default VideoContainer;

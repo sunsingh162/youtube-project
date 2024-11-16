@@ -1,12 +1,15 @@
-import { configureStore } from "@reduxjs/toolkit"
-import sidenavReducer from "./sidenavSlice"
-import searchReducer from "./searchSlice"
+import { configureStore } from "@reduxjs/toolkit";
+import appSlice from "./appSlice";
+import searchSlice from "./searchSlice";
+import chatSlice from "./chatSlice";
 
-const appStore = configureStore({
-   reducer: {
-     sidenav: sidenavReducer,
-     search: searchReducer
-   }
+const store = configureStore({
+    reducer:{
+        app: appSlice,
+        search: searchSlice,
+        chat : chatSlice,
+    }
 })
 
-export default appStore
+
+export default store;
