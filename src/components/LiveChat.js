@@ -21,6 +21,7 @@ const LiveChat = () => {
 
         // cleanup function to stop the interval when component unmounts
         return () => clearInterval(interval);
+    // eslint-disable-next-line
     },[])
 
   return (

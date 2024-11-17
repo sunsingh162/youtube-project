@@ -29,7 +29,8 @@ const Head = () => {
     // decline the api call
     return ()=> {
       clearTimeout(timer);
-    }     
+    }
+    // eslint-disable-next-line     
   },[searchQuery])
 
   const getSearchSuggestion = async () => {
