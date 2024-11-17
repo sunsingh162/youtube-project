@@ -16,6 +16,8 @@ const VideoContainer = () => {
     getvideos();
   },[])
 
+  if(!videos) return;
+
   return (
     <div className='relative justify-center cursor-pointer mb-5 flex flex-wrap gap-5 h-[100vh] w-[80vw] -z-50 top-10 left-60'>
       {videos[0] && <AdVideoCard info={videos[0]}/>}
